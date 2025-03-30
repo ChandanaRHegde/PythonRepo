@@ -23,9 +23,9 @@ def standardize_date(date_str):
 
 def merge_databases():
     # Define paths
-    db_path1 = r"C:\Users\seren\OneDrive\Desktop\PythonTransaction\SBI_CC_7670(D).db"
-    db_path2 = r"C:\Users\seren\OneDrive\Desktop\PythonTransaction\SBI_CC_7670(D1).db"
-    output_path = r"C:\Users\seren\OneDrive\Desktop\PythonTransaction\SBI_CC_7670.db"
+    db_path1 = r"C:\Users\seren\OneDrive\Desktop\PythonTransaction\SBI_CC_7670(T1).db"
+    db_path2 = r"C:\Users\seren\OneDrive\Desktop\PythonTransaction\SBI_CC_7670(T2).db"
+    output_path = r"C:\Users\seren\OneDrive\Desktop\NewfolderOne\SBI_CCMerge_7670.db"
 
     all_transactions = []
     
@@ -35,25 +35,23 @@ def merge_databases():
             conn1 = sqlite3.connect(db_path1)
             df1 = pd.read_sql_query("SELECT * FROM transactions", conn1)
             print(f"Database 1: Found {len(df1)} transactions")
+            print("Database 1 columns:", df1.columns.tolist())  # Debug print
             all_transactions.append(df1)
             conn1.close()
         except Exception as e:
             print(f"Error reading first database: {e}")
-    else:
-        print(f"First database not found at: {db_path1}")
-
+    
     # Process second database
     if os.path.exists(db_path2):
         try:
             conn2 = sqlite3.connect(db_path2)
             df2 = pd.read_sql_query("SELECT * FROM transactions", conn2)
             print(f"Database 2: Found {len(df2)} transactions")
+            print("Database 2 columns:", df2.columns.tolist())  # Debug print
             all_transactions.append(df2)
             conn2.close()
         except Exception as e:
             print(f"Error reading second database: {e}")
-    else:
-        print(f"Second database not found at: {db_path2}")
 
     if not all_transactions:
         print("No transactions found in either database!")
@@ -61,10 +59,21 @@ def merge_databases():
 
     # Combine all transactions
     merged_df = pd.concat(all_transactions, ignore_index=True)
+    print("Merged columns:", merged_df.columns.tolist())  # Debug print
     
-    # Standardize date column name
-    date_column = 'Date' if 'Date' in merged_df.columns else 'TransactionDate'
-    merged_df = merged_df.rename(columns={date_column: 'Date'})
+    # Standardize column names (adjust these based on your actual column names)
+    column_mapping = {
+        'Transaction_Details': 'TransactionDetails',  # Add any variations here
+        'Details': 'TransactionDetails',
+        'Transaction': 'TransactionDetails',
+        'Date': 'Date',
+        'TransactionDate': 'Date',
+        'Amount': 'Amount',
+        'BillingAmountSign': 'BillingAmountSign'
+    }
+    
+    # Rename columns if they exist
+    merged_df = merged_df.rename(columns=column_mapping)
     
     # Standardize all dates to YYYY-MM-DD format
     print("Standardizing dates...")
@@ -104,15 +113,22 @@ def merge_databases():
         '''
         conn.execute(create_table_sql)
         
+        # Ensure all required columns exist
+        required_columns = ['SrNo', 'Date', 'TransactionDetails', 'Amount', 'BillingAmountSign']
+        for col in required_columns:
+            if col not in merged_df.columns:
+                merged_df[col] = None  # Add missing columns with NULL values
+        
+        # Select only the columns we want
+        merged_df = merged_df[required_columns]
+        
         # Insert data
         merged_df.to_sql('transactions', conn, if_exists='replace', index=False)
         
         # Create index on date
         conn.execute('CREATE INDEX idx_date ON transactions(Date)')
         
-        # Commit changes
         conn.commit()
-
         print(f"\nSuccessfully merged databases:")
         print(f"Total transactions: {len(merged_df)}")
         
