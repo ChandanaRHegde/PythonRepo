@@ -1,20 +1,16 @@
 I need a Python script to convert bank statement PDF files into a structured SQLite database. 
 1.The source PDF contains transaction data with the following columns:
-SrNo
-TransID
-ValueDate
-TransactionDate
-CheqNo
-TransactionRemarks
-Withdrawal(Dr)
-Deposit(Cr)
-Balance
+SrNo,
+TransID,
+TransactionDescription,
+Amount in INR,
+Cash Points
 
 2.However, I only need to extract and store the following fields in the final database:
 SrNo
 TransactionDate
 Transaction Details (from TransactionRemarks)
-Amount (consolidated from Withdrawal and Deposit columns)
+Amount (consolidated from Amount in INR column)
 BillingAmountSign (should be 'Dr' for withdrawals or 'Cr' for deposits)
 
 3.The script should:
@@ -34,5 +30,5 @@ Error handling and validation
 Install the required libraries
 Update the pdf_path and db_path 
 
-30-Sep-24               ----->                22-Feb-25
-Missing Transactions ----   before 30-Sep-24
+                                  
+20-Jan-25               ----->                18-Feb-25

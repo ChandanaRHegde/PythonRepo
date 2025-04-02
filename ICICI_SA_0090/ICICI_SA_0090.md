@@ -34,3 +34,5 @@ Error handling and validation
 Install the required libraries
 Update the excel_path and db_path 
 
+05-Apr-23               ----->                24-Feb-25
+Missing Transactions ----   before 05-Apr-23   and April 2024 -- August 2024

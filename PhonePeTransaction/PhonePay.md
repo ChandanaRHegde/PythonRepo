@@ -29,3 +29,5 @@ I need a Python script to convert bank statement PDF files into a structured SQL
 5.1 Install the required libraries
 5.2 Update the pdf_path and db_path 
 
+05-Apr-23               ----->                24-Feb-25
+Missing Transactions ----   before 05-Apr-23   and April 2024 -- August 2024   

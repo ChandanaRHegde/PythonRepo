@@ -14,3 +14,7 @@ Please process the bank transaction data file with the following requirements:
  3.3 Remove any duplicate or unnecessary information
 
  The final output should be a well-organized dataset containing only the specified columns with complete and accurate transaction information.
+
+    08-Feb-24    ----> 01-Jun-24
+    Missing Trasactions -- January 2024, April 2024,  July 2024 onwards 
+    
